@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
 // Endpoint 1: Obtener todos los pacientes en formato JSON en la ruta /api/patients
 app.get('/api/patients', async (req, res) => {
     try {
-        const patients = [];
+        const patients = await Patient.find();
         res.json({
             message: "Query executed successfully",
             results: patients
@@ -45,10 +45,11 @@ app.get('/form', (req, res) => {
 app.get('/check', async (req, res) => {
     
     try {
-        const patient = await Patient.findOne();
+        const { ssn } = req.query;
+        const patient = await Patient.findOne({ssn});
         console.log("🚀 ~ file: app.js:52 ~ app.get ~ patient:", patient)
 
-        if (patient) {
+        if (patient.ssn) {
             res.render('patient-info', { patient });
         } else {
             res.render('patient-info', { patient: null, message: 'El paciente no existe en la base de datos' });
@@ -59,7 +60,7 @@ app.get('/check', async (req, res) => {
 });
 
 // Iniciar el servidor
-const PORT = 3000;
+const PORT = 3009;
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
